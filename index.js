@@ -146,7 +146,7 @@ const addEmployee = () => {
         }
     ]) 
     .then(employeeData => {
-        let {name, id, email, role, github, school, confrimEmployee} = employeeData
+        let {name, id, email, role, github, school, confirmAddEmployee} = employeeData
         let employee
 
         if (role === 'Engineer') {
@@ -160,7 +160,7 @@ const addEmployee = () => {
         }
 
         teamArray.push(employee)
-        if (confrimEmployee) {
+        if (confirmAddEmployee) {
             return addEmployee(teamArray)
         } else {
             return teamArray
