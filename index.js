@@ -36,7 +36,8 @@ const addManager = () => {
             type: 'input',
             name: 'email',
             meassage: 'Please enter the managers email',
-            validate: nameInput => {
+            validate: email => {
+                valid = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)
                 if (valid) {
                     return true
                 } else {
@@ -115,13 +116,14 @@ const addEmployee = () => {
             type: 'input',
             name: 'github',
             message: 'Please enter the employees github username',
-            when: (input) => {
+            when: (input) => input.role === 'Engineer', 
+            validate: nameInput => {
                 if (nameInput) {
                     return true
                 } else {
                     console.log('Please enter the employees github username')
                 }
-            }
+            }    
         },
         {
             type: 'input',
@@ -142,12 +144,13 @@ const addEmployee = () => {
             message: 'Wouold you like to add more team members?',
             default: false
         }
-    ]) .then(employeeData => {
+    ]) 
+    .then(employeeData => {
         let {name, id, email, role, github, school, confrimEmployee} = employeeData
         let employee
 
         if (role === 'Engineer') {
-            employee = newEngineer (name, id, email, github)
+            employee = new Engineer (name, id, email, github)
 
             console.log(employee)
         } else if (role === 'Intern') {
@@ -164,3 +167,26 @@ const addEmployee = () => {
         }
     }) 
 }
+
+const writeFile = data => {
+    fs.writeFile('./dist/index.html', data, err => {
+        if (err) {
+            console.log(err)
+            return
+        } else {
+            console.log('Your team profile has been successfully created')
+        }
+    })
+}
+
+addManager()
+    .then(addEmployee)
+    .then(teamArray => {
+        return generateHTML(teamArray)
+    })
+    .then(pageHTML => {
+        return writeFile(pageHTML)
+    })
+    .catch(err => {
+        console.log(err)
+    })
